@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 from backend.app.routes.jobs import router as jobs_router
 
 app = FastAPI()

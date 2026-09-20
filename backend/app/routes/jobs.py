@@ -1,37 +1,27 @@
 # Contains job related API endpoints
-from fastapi import APIRouter, status
-from backend.app.models.job import JobCreate
+from fastapi import APIRouter, status, Depends
+from sqlalchemy.orm import Session 
+
+from backend.app.schemas.job import JobCreate
+from backend.app.database import get_db
+from backend.app.models.job import Job
+
 
 router = APIRouter()
 
-jobs = [
-    {
-        "id": 1,
-        "title": "Graduate Software Engineer",
-        "company": "Monzo",
-    },
-    {
-        "id": 2,
-        "title": "Python Developer",
-        "company": "Example Technologies",
-    },
-    {
-        "id": 3,
-        "title": "Backend Engineer",
-        "company": "Tech Startup",
-    },
-]
-
 @router.get("/jobs")
-async def get_jobs():
-    return jobs
+async def get_jobs(db: Session = Depends(get_db)):
+    return db.query(Job).all()
 
 @router.post("/jobs", status_code=status.HTTP_201_CREATED)
-async def create_job(job: JobCreate):
-    new_job = {
-        "id": len(jobs) + 1,
-        "title": job.title,
-        "company": job.company,
-    }
-    jobs.append(new_job)
+async def create_job(
+    job: JobCreate,
+    db: Session = Depends(get_db)
+):
+    new_job = Job(title=job.title, company=job.company)
+
+    db.add(new_job)
+    db.commit()          # finalize the changes made to the database
+    db.refresh(new_job)  # reload this object from the database to get the updated values (like id)
+
     return new_job
