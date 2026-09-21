@@ -1,9 +1,11 @@
-from pydantic import BaseModel
-from fastapi import status
+from sqlalchemy import String
+from sqlalchemy.orm import Mapped, mapped_column
 
-# in models we have the job description and thats why have these data
+from backend.app.database import Base
 
-class JobCreate(BaseModel):
-    title: str
-    company: str
+class Job(Base):
+    __tablename__ = "jobs"
 
+    id: Mapped[int] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    company: Mapped[str] = mapped_column(String(255), nullable=False)
