@@ -33,7 +33,7 @@ async def update_job(
     if job is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job not found")
 
-    update_data = job_update.dict(exclude_unset=True)  # get only the fields that were provided in the request
+    update_data = job_update.model_dump(exclude_unset=True)  # get only the fields that were provided in the request
     for field, value in update_data.items():
         setattr(job, field, value)  # update the job object with the new values
 

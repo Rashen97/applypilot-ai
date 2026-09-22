@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class JobCreate(BaseModel):
     title: str
@@ -12,6 +12,3 @@ class JobResponse(BaseModel):
     id: int
     title: str
     company: str
-
-    class Config:
-        orm_mode = True
